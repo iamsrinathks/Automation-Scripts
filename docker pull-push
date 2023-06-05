@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Define variables
+DOCKER_HUB_IMAGE="dockerhub-username/image-name:tag"
+GAR_IMAGE="LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/IMAGE_NAME:TAG"
+
+# Authenticate with Docker Hub
+docker login --username=dockerhub-username --password=dockerhub-password
+
+# Pull the image from Docker Hub
+docker pull $DOCKER_HUB_IMAGE
+
+# Retag the image
+docker tag $DOCKER_HUB_IMAGE $GAR_IMAGE
+
+# Authenticate with Google Cloud and configure Docker to use GAR
+gcloud auth login
+gcloud auth configure-docker LOCATION-docker.pkg.dev
+
+# Push the image to Google Artifact Registry
+docker push $GAR_IMAGE
