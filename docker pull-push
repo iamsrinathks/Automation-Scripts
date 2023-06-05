@@ -1,8 +1,15 @@
+
 #!/bin/bash
 
+# Check if image name argument is provided
+if [ -z "$1" ]; then
+  echo "Usage: ./push-image.sh <image-name>"
+  exit 1
+fi
+
 # Define variables
-DOCKER_HUB_IMAGE="dockerhub-username/image-name:tag"
-GAR_IMAGE="LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/IMAGE_NAME:TAG"
+DOCKER_HUB_IMAGE="dockerhub-username/$1"
+GAR_IMAGE="LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/$1"
 
 # Authenticate with Docker Hub
 docker login --username=dockerhub-username --password=dockerhub-password
