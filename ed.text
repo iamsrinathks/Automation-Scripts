@@ -2,6 +2,14 @@ Certainly! Here's the detailed document on external DNS in Google Cloud, followi
 
 ---
 
+Introduction
+
+External DNS is a powerful tool used to manage DNS records dynamically for resources in Google Cloud. In the context of Istio, External DNS can be leveraged to update DNS records based on the configuration of Istio Virtual Services and Gateways. This document provides an overview of External DNS, discusses the placement options for DNS zones, and explains the required permissions when using External DNS with Istio.
+
+1. What is External DNS?
+
+External DNS is a Kubernetes-based project that automates the management of DNS records for cloud resources. It allows you to map domain names to your resources dynamically by monitoring the Kubernetes resources and making DNS changes accordingly. With External DNS, you can simplify the management of DNS records and ensure that they are always up-to-date.
+
 Title: Understanding External DNS in Google Cloud
 
 1. Introduction
