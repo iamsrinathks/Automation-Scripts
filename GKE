@@ -1,0 +1,77 @@
+When it comes to monitoring and alerting in Google Kubernetes Engine (GKE), there are various out-of-the-box metrics that you can capture. These metrics help you understand the health and performance of your GKE clusters and the applications running on them. Here's a list of different categories of metrics you can monitor:
+
+Cluster Level Components:
+Virtual Machine (VM) metrics: CPU usage, memory usage, disk I/O, network I/O of the VM instances hosting the nodes.
+Managed GKE Components:
+Control plane metrics: Metrics related to the Kubernetes control plane, such as API server latency, etcd metrics, scheduler metrics, etc.
+Kubernetes Objects and Workloads:
+Node metrics: Metrics for individual Kubernetes nodes, including CPU usage, memory usage, and disk space.
+Pod metrics: Metrics related to Kubernetes pods, such as CPU usage, memory usage, network traffic, etc.
+Deployment metrics: Metrics for Kubernetes deployments, such as the number of replicas, available replicas, etc.
+ReplicaSet metrics: Metrics for ReplicaSets, such as the desired number of replicas, current replicas, etc.
+StatefulSet metrics: Metrics for StatefulSets, including pod status, current replicas, desired replicas, etc.
+DaemonSet metrics: Metrics for DaemonSets, such as the number of scheduled pods, number of ready pods, etc.
+Service metrics: Metrics related to Kubernetes services, such as network traffic, request/response rates, etc.
+Applications:
+Custom application metrics: Metrics emitted by your applications, which you can capture using libraries like Prometheus, StatsD, or OpenTelemetry.
+External to GKE:
+External service metrics: Metrics from external services that your applications might depend on, such as databases, caches, or APIs.
+To effectively monitor these metrics and set up alerts, you can use various tools provided by Google Cloud Platform, including Google Cloud Monitoring (formerly known as Stackdriver), which offers integration with GKE and allows you to visualize, analyze, and set up alerting based on these metrics.
+
+Keep in mind that the exact metrics available for monitoring might vary depending on the GKE version, monitoring options enabled, and any custom configurations you have in place. It's always a good idea to refer to the official GKE documentation for the most up-to-date information on monitoring and alerting capabilities.
+
+
+#################
+
+Google Cloud Monitoring (Stackdriver): Google Cloud Monitoring, formerly known as Stackdriver, is a powerful tool for monitoring and observability in GKE. It allows you to collect, view, and analyze metrics, logs, and traces from various sources within your GKE clusters and other Google Cloud services. Stackdriver provides a user-friendly interface to set up custom dashboards, create charts, and visualize the performance of your resources and applications.
+Autoscaling Metrics: GKE supports Horizontal Pod Autoscaling (HPA) and Cluster Autoscaler. HPA scales the number of replicas of a deployment based on CPU utilization or custom metrics, and Cluster Autoscaler adjusts the size of your cluster based on resource demands. These autoscaling features rely on monitoring metrics such as CPU utilization, memory usage, and custom metrics that you define.
+Kubernetes Events: In addition to metrics, Kubernetes generates events to notify you about various occurrences in your cluster, such as pod scheduling failures, container restarts, etc. Monitoring these events can help you identify and troubleshoot issues.
+Custom Metrics and Logging: Apart from the built-in metrics, GKE allows you to define and collect custom metrics from your applications using tools like Prometheus, StatsD, or OpenTelemetry. You can also gather logs from containers and system components in your cluster, enabling deeper insights into application behavior and performance.
+Service Mesh Metrics: If you are using a service mesh like Istio or Linkerd in your GKE cluster, you can monitor additional metrics related to traffic routing, service latency, and other networking-related aspects.
+Predefined Dashboards: GKE comes with predefined dashboards in Google Cloud Monitoring that provide an overview of the cluster health, node status, pod status, and various other key metrics. These dashboards offer a quick glance at the overall performance of your cluster.
+Alerting Policies: Google Cloud Monitoring enables you to set up alerting policies based on specific conditions or thresholds. You can configure alerts to notify you via email, SMS, or other notification channels when certain metrics exceed defined thresholds. This helps you proactively respond to critical issues and avoid potential downtime.
+Resource Monitoring for Node Pools: GKE allows you to create node pools with different machine types and autoscaling configurations. Monitoring the resource usage of each node pool helps you optimize the allocation of resources and identify any underutilized or overutilized nodes.
+
+
+
+
+
+
+
+
+##########
+
+Google Kubernetes Engine (GKE) provides a number of out-of-the-box metrics that can be captured for monitoring and alerting purposes. These metrics include:
+
+Cluster metrics: These metrics provide insights into the overall health and performance of the cluster, such as the number of nodes, the amount of CPU and memory usage, and the number of pods running.
+Node metrics: These metrics provide insights into the health and performance of individual nodes, such as the CPU and memory usage, the number of pods running, and the number of disk I/O operations.
+Pod metrics: These metrics provide insights into the health and performance of individual pods, such as the CPU and memory usage, the number of restarts, and the number of errors.
+Container metrics: These metrics provide insights into the health and performance of individual containers, such as the CPU and memory usage, the number of restarts, and the number of errors.
+In addition to these out-of-the-box metrics, GKE also allows you to capture custom metrics. This can be useful for tracking metrics that are specific to your application or environment.
+
+To view and manage metrics in GKE, you can use the Cloud Monitoring console or the Cloud Monitoring API. You can also use third-party tools such as Prometheus and Grafana to visualize and alert on metrics.
+
+Here are some of the most important metrics that you should track in GKE:
+
+CPU usage: This metric measures the amount of CPU that is being used by your cluster. If CPU usage is consistently high, it may be a sign that your cluster is not scaled appropriately or that there is a performance issue with your application.
+Memory usage: This metric measures the amount of memory that is being used by your cluster. If memory usage is consistently high, it may be a sign that your cluster is not scaled appropriately or that there is a memory leak in your application.
+Pod restarts: This metric measures the number of times pods have restarted in your cluster. If pod restarts are frequent, it may be a sign that there is a problem with your application or environment.
+Error logs: This metric measures the number of error logs that have been generated in your cluster. If error logs are frequent, it may be a sign that there is a problem with your application or environment.
+By tracking these metrics, you can gain valuable insights into the health and performance of your GKE cluster. This information can help you to identify and resolve problems before they impact your application's availability or performance.
+
+################
+
+Cluster level components:
+VM metrics: These metrics provide insights into the health and performance of individual VMs, such as the CPU and memory usage, the number of disk I/O operations, and the number of network packets received and transmitted.
+Control plane metrics: These metrics provide insights into the health and performance of the control plane, such as the number of API requests processed, the number of nodes managed, and the number of pods running.
+Managed GKE component:
+Managed Service for Prometheus: This metric provides insights into the health and performance of the Managed Service for Prometheus, such as the number of metrics scraped, the number of alerts generated, and the number of queries executed.
+Kubernetes objects and workloads:
+Pod metrics: These metrics provide insights into the health and performance of individual pods, such as the CPU and memory usage, the number of restarts, and the number of errors.
+Service metrics: These metrics provide insights into the health and performance of individual services, such as the number of requests received, the number of requests served, and the amount of traffic served.
+Deployment metrics: These metrics provide insights into the health and performance of individual deployments, such as the number of pods created, the number of pods running, and the number of pods failed.
+Applications:
+Application metrics: These metrics provide insights into the health and performance of individual applications, such as the number of active users, the number of requests per second, and the average response time.
+External to GKE:
+External metrics: These metrics provide insights into the health and performance of external systems that your GKE cluster interacts with, such as the number of database queries executed, the number of API calls made, and the amount of traffic sent and received.
+By tracking these metrics, you can gain valuable insights into the health and performance of your GKE cluster, its components, and the applications that it runs. This information can help you to identify and resolve problems before they impact your application's availability or performance.
