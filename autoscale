@@ -1,0 +1,66 @@
+The metric "autoscaler/container/cpu/per_replica_recommended_request_cores" is a Beta Google Cloud Monitoring metric that provides information about the recommended CPU request for a single replica of a workload (such as a Kubernetes Deployment or StatefulSet). Here's a breakdown of the metric:
+
+**Metric Name:** autoscaler/container/cpu/per_replica_recommended_request_cores
+
+**Status:** Beta
+
+**Type:** GAUGE
+
+**Value Type:** DOUBLE
+
+**Default Aggregation:** {cpu} (Mean)
+
+**Resource Type:** k8s_scale
+
+**Description:** The "autoscaler/container/cpu/per_replica_recommended_request_cores" metric represents the number of CPU cores recommended as the CPU request for a single replica of the workload. In Kubernetes, resource requests are used to specify the minimum amount of resources (in this case, CPU cores) that a container needs to run. The autoscaler provides a recommendation for the CPU request to ensure that the workload has enough resources to function properly.
+
+**Dimensions:**
+- **container_name:** Name of the container for which the recommendation is made.
+
+**Sampling Frequency:** The metric is sampled every 60 seconds.
+
+**Data Visibility Delay:** After sampling, data is not visible for up to 240 seconds. This means there might be a delay of up to 240 seconds before the metric data is available for querying and visualization.
+
+**Interpretation:** The "autoscaler/container/cpu/per_replica_recommended_request_cores" metric is helpful for determining the recommended CPU request for each replica of the workload. The autoscaler calculates this recommendation based on the observed CPU usage patterns and resource needs of the workload. By using the recommended CPU request, you can ensure that each replica has the necessary CPU resources allocated to perform efficiently without unnecessary overprovisioning.
+
+**Resource Type "k8s_scale":** This metric is associated with Kubernetes scalable workloads, like Deployments or StatefulSets, and provides recommendations on CPU request values per replica.
+
+**Note:** As this metric is labeled as "Beta," it means that it is still in a testing phase and subject to change. It is recommended to verify the usage and interpretation of this metric with the official documentation and keep an eye on any updates or changes made by Google Cloud Monitoring.
+
+Overall, the "autoscaler/container/cpu/per_replica_recommended_request_cores" metric helps you optimize the resource allocation of your Kubernetes workloads by providing recommendations for the CPU request per replica, allowing you to improve efficiency and resource utilization in your Kubernetes clusters.
+
+
+
+
+----------------------------------------------------
+
+The metric "autoscaler/container/memory/per_replica_recommended_request_bytes" is a Beta Google Cloud Monitoring metric that provides information about the recommended memory request for a single replica of a workload (such as a Kubernetes Deployment or StatefulSet). Here's a breakdown of the metric:
+
+**Metric Name:** autoscaler/container/memory/per_replica_recommended_request_bytes
+
+**Status:** Beta
+
+**Type:** GAUGE
+
+**Value Type:** INT64 (64-bit signed integer)
+
+**Default Aggregation:** By (Default aggregation is not specified)
+
+**Resource Type:** k8s_scale
+
+**Description:** The "autoscaler/container/memory/per_replica_recommended_request_bytes" metric represents the recommended memory request in bytes for a single replica of the workload. In Kubernetes, resource requests are used to specify the minimum amount of resources (in this case, memory) that a container needs to run. The autoscaler provides a recommendation for the memory request to ensure that the workload has enough memory resources to function properly.
+
+**Dimensions:**
+- **container_name:** Name of the container for which the recommendation is made.
+
+**Sampling Frequency:** The metric is sampled every 60 seconds.
+
+**Data Visibility Delay:** After sampling, data is not visible for up to 240 seconds. This means there might be a delay of up to 240 seconds before the metric data is available for querying and visualization.
+
+**Interpretation:** The "autoscaler/container/memory/per_replica_recommended_request_bytes" metric is helpful for determining the recommended memory request (in bytes) for each replica of the workload. The autoscaler calculates this recommendation based on the observed memory usage patterns and resource needs of the workload. By using the recommended memory request, you can ensure that each replica has the necessary memory resources allocated to perform efficiently without unnecessary overprovisioning.
+
+**Resource Type "k8s_scale":** This metric is associated with Kubernetes scalable workloads, like Deployments or StatefulSets, and provides recommendations on memory request values per replica.
+
+**Note:** As this metric is labeled as "Beta," it means that it is still in a testing phase and subject to change. It is recommended to verify the usage and interpretation of this metric with the official documentation and keep an eye on any updates or changes made by Google Cloud Monitoring.
+
+Overall, the "autoscaler/container/memory/per_replica_recommended_request_bytes" metric helps you optimize the resource allocation of your Kubernetes workloads by providing recommendations for the memory request per replica, allowing you to improve efficiency and resource utilization in your Kubernetes clusters.
