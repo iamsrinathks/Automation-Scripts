@@ -1,0 +1,71 @@
+The metric "node_daemon/cpu/core_usage_time" is a Google Cloud Monitoring metric that provides information about the cumulative CPU usage time of the node-level system daemon on a Kubernetes node. Here's a breakdown of the metric:
+
+**Metric Name:** node_daemon/cpu/core_usage_time
+
+**Status:** GA (Generally Available)
+
+**Type:** CUMULATIVE
+
+**Value Type:** DOUBLE
+
+**Default Aggregation:** s{CPU} (Sum)
+
+**Resource Type:** k8s_node
+
+**Description:** The "node_daemon/cpu/core_usage_time" metric represents the cumulative CPU usage time on all cores used by the node-level system daemon. It provides the total CPU time used by the system daemon running on the node in seconds.
+
+**Dimensions:**
+- **component:** Name of the respective system daemon.
+
+**Sampling Frequency:** The metric is sampled every 60 seconds.
+
+**Interpretation:** The "node_daemon/cpu/core_usage_time" metric is useful for monitoring the CPU consumption of system daemons running on a Kubernetes node. The cumulative value indicates the total CPU time utilized by the system daemon across all cores since the start of the data collection.
+
+**Resource Type "k8s_node":** This metric is associated with Kubernetes nodes and provides CPU usage information for the system daemons running on those nodes.
+
+System daemons are background processes that run on the node to handle various tasks and services required for the node's operation. Examples of system daemons include the kubelet, container runtime (e.g., Docker), and other node-level services.
+
+The metric allows you to track the CPU usage of these important system components, which can help you identify potential performance issues, resource contention, or abnormal behavior on the node. Monitoring the CPU usage of system daemons can aid in troubleshooting and capacity planning to ensure the smooth operation of your Kubernetes cluster and the applications running within it.
+
+Overall, the "node_daemon/cpu/core_usage_time" metric provides insights into the CPU utilization of system daemons on a Kubernetes node, enabling you to effectively manage and optimize the node's performance and resource allocation.
+
+
+
+------------------------
+
+
+The metric "node_daemon/memory/used_bytes" is a Google Cloud Monitoring metric that provides information about the memory usage of the system daemon running on a Kubernetes node. Here's a breakdown of the metric:
+
+**Metric Name:** node_daemon/memory/used_bytes
+
+**Status:** GA (Generally Available)
+
+**Type:** GAUGE
+
+**Value Type:** INT64 (64-bit signed integer)
+
+**Default Aggregation:** By (Default aggregation is not specified)
+
+**Resource Type:** k8s_node
+
+**Description:** The "node_daemon/memory/used_bytes" metric represents the memory usage by the system daemon on the Kubernetes node, measured in bytes.
+
+**Dimensions:**
+- **component:** Name of the respective system daemon.
+- **memory_type:** The memory type, which can be either `evictable` or `non-evictable`.
+  - Evictable memory is memory that can be easily reclaimed by the kernel, such as cached data that can be cleared if needed.
+  - Non-evictable memory is memory that cannot be easily reclaimed by the kernel, such as memory used by certain kernel components or pinned memory.
+
+**Sampling Frequency:** The metric is sampled every 60 seconds.
+
+**Interpretation:** The "node_daemon/memory/used_bytes" metric is useful for monitoring the memory consumption of system daemons running on a Kubernetes node. It indicates the current memory usage by the system daemon at a given point in time.
+
+**Resource Type "k8s_node":** This metric is associated with Kubernetes nodes and provides memory usage information for the system daemons running on those nodes.
+
+System daemons are background processes that run on the node to handle various tasks and services required for the node's operation. Examples of system daemons include the kubelet, container runtime (e.g., Docker), and other node-level services.
+
+The metric provides insights into how much memory is being used by these important system components, which can help you identify potential memory-related issues, resource contention, or abnormal behavior on the node. Monitoring the memory usage of system daemons can aid in troubleshooting and capacity planning to ensure the optimal operation of your Kubernetes cluster and the applications running within it.
+
+**Note:** The distinction between `evictable` and `non-evictable` memory types in the metric allows you to differentiate between memory that can be easily reclaimed by the kernel (evictable) and memory that cannot (non-evictable), providing additional insights into memory usage patterns.
+
+Overall, the "node_daemon/memory/used_bytes" metric helps you track the memory utilization of system daemons on a Kubernetes node, enabling you to effectively manage memory resources and optimize the performance of the node and the workloads running on it.
