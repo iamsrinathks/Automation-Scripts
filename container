@@ -1,0 +1,161 @@
+The metric "container/cpu/limit_utilization" is a Google Cloud Monitoring metric that provides information about the CPU limit utilization of a container running on a Kubernetes cluster. Here's a breakdown of the metric:
+
+**Metric Name:** container/cpu/limit_utilization
+
+**Status:** GA (Generally Available)
+
+**Type:** GAUGE
+
+**Value Type:** DOUBLE
+
+**Default Aggregation:** 1 (Mean)
+
+**Resource Type:** k8s_container
+
+**Description:** The "container/cpu/limit_utilization" metric represents the fraction of the CPU limit that is currently in use on the instance where the container is running. The value of this metric can range from 0 to 1. A value of 0 indicates that the container is not using any CPU resources, while a value of 1 indicates that the container is utilizing its entire CPU limit.
+
+**Sampling Frequency:** The metric is sampled every 60 seconds.
+
+**Data Visibility Delay:** After sampling, data is not visible for up to 240 seconds. This means there might be a delay of up to 240 seconds before the metric data is available for querying and visualization.
+
+**Interpretation:** The "container/cpu/limit_utilization" metric can be used to monitor how efficiently a container is using the CPU resources allocated to it. If the value is close to 1, it indicates that the container is heavily utilizing the CPU resources available to it, and it might be reaching its CPU limit. On the other hand, if the value is consistently low, it might indicate that the container is not fully utilizing the CPU resources allocated to it, and you could potentially optimize its resource allocation.
+
+**Resource Type "k8s_container":** This metric is associated with Kubernetes containers and can be used to monitor the CPU limit utilization of individual containers running within a Kubernetes cluster.
+
+Overall, the "container/cpu/limit_utilization" metric is valuable for understanding the CPU usage efficiency of containers and identifying potential resource allocation issues within your Kubernetes environment. You can use this information to optimize your container resource allocations and ensure efficient utilization of CPU resources in your Kubernetes workloads.
+
+
+--------------------------------------------------------------------
+
+
+
+  The metric "container/cpu/request_utilization" is a Google Cloud Monitoring metric that provides information about the CPU request utilization of a container running on a Kubernetes cluster. Here's a breakdown of the metric:
+
+**Metric Name:** container/cpu/request_utilization
+
+**Status:** GA (Generally Available)
+
+**Type:** GAUGE
+
+**Value Type:** DOUBLE
+
+**Default Aggregation:** 1 (Mean)
+
+**Resource Type:** k8s_container
+
+**Description:** The "container/cpu/request_utilization" metric represents the fraction of the requested CPU that is currently in use on the instance where the container is running. The value of this metric can be greater than 1, indicating that the container is utilizing more CPU resources than it originally requested.
+
+**Sampling Frequency:** The metric is sampled every 60 seconds.
+
+**Data Visibility Delay:** After sampling, data is not visible for up to 240 seconds. This means there might be a delay of up to 240 seconds before the metric data is available for querying and visualization.
+
+**Interpretation:** The "container/cpu/request_utilization" metric helps monitor how much CPU capacity a container is using relative to its requested CPU resources. If the value is close to 1, it indicates that the container is utilizing the CPU resources as per its requested CPU limit. However, if the value exceeds 1, it suggests that the container is consuming more CPU resources than it initially requested, which could be an indicator of potential performance issues or resource contention.
+
+**Resource Type "k8s_container":** This metric is associated with Kubernetes containers and can be used to monitor the CPU request utilization of individual containers running within a Kubernetes cluster.
+
+**Note:** CPU request utilization being greater than 1 is allowed in Kubernetes. It means that the container is using more CPU than it originally requested. Kubernetes allows this behavior to accommodate burstable workloads where containers are allowed to consume more resources temporarily based on available resources in the cluster. However, consistently high CPU request utilization above 1 may indicate that the container's resource requests need adjustment to better align with its actual resource usage.
+
+Overall, the "container/cpu/request_utilization" metric provides insights into how well containers are utilizing their requested CPU resources and helps optimize resource allocation in Kubernetes environments to ensure efficient resource utilization and avoid resource constraints.
+
+
+
+
+
+
+-------------------------------------------------------------
+  The metric "container/memory/limit_utilization" is a Google Cloud Monitoring metric that provides information about the memory limit utilization of a container running on a Kubernetes cluster. Here's a breakdown of the metric:
+
+**Metric Name:** container/memory/limit_utilization
+
+**Status:** GA (Generally Available)
+
+**Type:** GAUGE
+
+**Value Type:** DOUBLE
+
+**Default Aggregation:** 1 (Mean)
+
+**Resource Type:** k8s_container
+
+**Description:** The "container/memory/limit_utilization" metric represents the fraction of the memory limit that is currently in use on the instance where the container is running. The value of this metric can range from 0 to 1. A value of 0 indicates that the container is not using any memory resources, while a value of 1 indicates that the container is utilizing its entire memory limit.
+
+**Memory Types:**
+- The metric includes additional information about the memory type, which can be either `evictable` or `non-evictable`.
+- Evictable memory is memory that can be easily reclaimed by the kernel, such as cached data that can be cleared if needed.
+- Non-evictable memory, on the other hand, is memory that cannot be easily reclaimed by the kernel, such as memory used by certain kernel components or pinned memory.
+
+**Sampling Frequency:** The metric is sampled every 60 seconds.
+
+**Data Visibility Delay:** After sampling, data is not visible for up to 120 seconds. This means there might be a delay of up to 120 seconds before the metric data is available for querying and visualization.
+
+**Interpretation:** The "container/memory/limit_utilization" metric can be used to monitor how efficiently a container is using the memory resources allocated to it based on its memory limit. If the value is close to 1, it indicates that the container is heavily utilizing the memory resources available to it, and it might be reaching its memory limit.
+
+**Resource Type "k8s_container":** This metric is associated with Kubernetes containers and can be used to monitor the memory limit utilization of individual containers running within a Kubernetes cluster.
+
+Overall, the "container/memory/limit_utilization" metric is valuable for understanding the memory usage efficiency of containers and identifying potential memory-related issues within your Kubernetes environment. You can use this information to optimize your container resource allocations and ensure efficient utilization of memory resources in your Kubernetes workloads. Additionally, the distinction between evictable and non-evictable memory can provide insights into different memory usage patterns and resource reclaimability by the kernel.
+
+
+
+
+  -------------------------------------------
+  The metric "container/memory/request_utilization" is a Google Cloud Monitoring metric that provides information about the memory request utilization of a container running on a Kubernetes cluster. Here's a breakdown of the metric:
+
+**Metric Name:** container/memory/request_utilization
+
+**Status:** GA (Generally Available)
+
+**Type:** GAUGE
+
+**Value Type:** DOUBLE
+
+**Default Aggregation:** 1 (Mean)
+
+**Resource Type:** k8s_container
+
+**Description:** The "container/memory/request_utilization" metric represents the fraction of the requested memory that is currently in use on the instance where the container is running. The value of this metric can be greater than 1, indicating that the container is utilizing more memory resources than it originally requested.
+
+**Memory Types:**
+- The metric includes additional information about the memory type, which can be either `evictable` or `non-evictable`.
+- Evictable memory is memory that can be easily reclaimed by the kernel, such as cached data that can be cleared if needed.
+- Non-evictable memory, on the other hand, is memory that cannot be easily reclaimed by the kernel, such as memory used by certain kernel components or pinned memory.
+
+**Sampling Frequency:** The metric is sampled every 60 seconds.
+
+**Data Visibility Delay:** After sampling, data is not visible for up to 240 seconds. This means there might be a delay of up to 240 seconds before the metric data is available for querying and visualization.
+
+**Interpretation:** The "container/memory/request_utilization" metric helps monitor how much memory capacity a container is using relative to its requested memory resources. If the value is close to 1, it indicates that the container is utilizing the memory resources as per its requested memory limit. However, if the value exceeds 1, it suggests that the container is consuming more memory resources than it initially requested. This could be due to burstable workloads or resource contention.
+
+**Resource Type "k8s_container":** This metric is associated with Kubernetes containers and can be used to monitor the memory request utilization of individual containers running within a Kubernetes cluster.
+
+**Note:** Memory request utilization being greater than 1 is allowed in Kubernetes. It means that the container is using more memory than it originally requested. Kubernetes allows this behavior to accommodate burstable workloads where containers are allowed to consume more resources temporarily based on available resources in the cluster. However, consistently high memory request utilization above 1 may indicate that the container's resource requests need adjustment to better align with its actual memory usage.
+
+Overall, the "container/memory/request_utilization" metric provides insights into how well containers are utilizing their requested memory resources and helps optimize resource allocation in Kubernetes environments to ensure efficient memory utilization and avoid memory-related performance issues. Additionally, the distinction between evictable and non-evictable memory can provide insights into different memory usage patterns and resource reclaimability by the kernel.
+
+
+
+------------------------------------------------
+  The metric "container/uptime" is a Google Cloud Monitoring metric that provides information about the uptime of a container running on a Kubernetes cluster. Here's a breakdown of the metric:
+
+**Metric Name:** container/uptime
+
+**Status:** GA (Generally Available)
+
+**Type:** GAUGE
+
+**Value Type:** DOUBLE
+
+**Default Aggregation:** s (Sum)
+
+**Resource Type:** k8s_container
+
+**Description:** The "container/uptime" metric represents the time in seconds that the container has been running since it was started. It provides the duration for which the container process has been active.
+
+**Sampling Frequency:** The metric is sampled every 60 seconds.
+
+**Interpretation:** The "container/uptime" metric is useful for monitoring the stability and availability of containers in a Kubernetes cluster. By tracking the uptime of containers, you can ensure that your applications are running continuously and detect any issues related to container lifecycle management.
+
+**Resource Type "k8s_container":** This metric is associated with Kubernetes containers and can be used to monitor the uptime of individual containers running within a Kubernetes cluster.
+
+As a "GAUGE" type metric, the "container/uptime" value represents an absolute value that continuously increases as long as the container is running. It's important to note that the metric provides the total uptime since the container was started and does not provide information about specific restarts or outages.
+
+Overall, the "container/uptime" metric helps you understand the availability and stability of your containers, aiding in the identification of potential issues and ensuring the overall health of your Kubernetes-based applications. Monitoring container uptime is crucial for ensuring reliable and continuous operation of your services within the Kubernetes environment.
