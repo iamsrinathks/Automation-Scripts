@@ -1,0 +1,35 @@
+The metric "pod/volume/utilization" is a Google Cloud Monitoring metric that provides information about the volume utilization of a Kubernetes Pod running on a Kubernetes cluster. Here's a breakdown of the metric:
+
+**Metric Name:** pod/volume/utilization
+
+**Status:** GA (Generally Available)
+
+**Type:** GAUGE
+
+**Value Type:** DOUBLE
+
+**Default Aggregation:** 1 (Mean)
+
+**Resource Type:** k8s_pod
+
+**Description:** The "pod/volume/utilization" metric represents the fraction of the volume that is currently being used by the instance (Pod). The value of this metric can range from 0 to 1, where 0 indicates that the volume is not being used at all, and 1 indicates that the volume is fully utilized (usage equals the total available volume space).
+
+**Dimensions:**
+- **volume_name:** The name of the volume associated with the Pod. For example, `/dev/sda1`.
+- **persistentvolumeclaim_name:** The name of the referenced Persistent Volume Claim (PVC) that is using the volume.
+- **persistentvolumeclaim_namespace:** The namespace of the referenced Persistent Volume Claim.
+
+**Sampling Frequency:** The metric is sampled every 60 seconds.
+
+**Data Visibility Delay:** After sampling, data is not visible for up to 120 seconds. This means there might be a delay of up to 120 seconds before the metric data is available for querying and visualization.
+
+**Interpretation:** The "pod/volume/utilization" metric can be used to monitor how much of the volume attached to a Pod is being used. If the value is close to 1, it indicates that the volume is nearly fully utilized. Conversely, if the value is closer to 0, it suggests that the volume is not heavily utilized, and there is available space in the volume.
+
+**Resource Type "k8s_pod":** This metric is associated with Kubernetes Pods and can be used to monitor the volume utilization of individual Pods running within a Kubernetes cluster.
+
+Overall, the "pod/volume/utilization" metric provides insights into how much of the attached volume's space is being used by a Pod, allowing you to monitor and manage volume capacity more effectively. Monitoring volume utilization helps ensure that your storage resources are efficiently utilized and that there is sufficient space to store data for your applications within the Kubernetes environment.
+
+
+
+
+-----------------------
