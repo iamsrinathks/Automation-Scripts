@@ -1,0 +1,87 @@
+The metric "node/cpu/allocatable_utilization" is a Google Cloud Monitoring metric that provides information about the CPU allocatable utilization of a node in a Kubernetes cluster. Here's a breakdown of the metric:
+
+**Metric Name:** node/cpu/allocatable_utilization
+
+**Status:** GA (Generally Available)
+
+**Type:** GAUGE
+
+**Value Type:** DOUBLE
+
+**Default Aggregation:** 1 (Mean)
+
+**Resource Type:** k8s_node
+
+**Description:** The "node/cpu/allocatable_utilization" metric represents the fraction of the CPU allocatable that is currently in use on the node. The value of this metric can range from 0 to 1, where 0 indicates that the node's CPU resources are not being used, and 1 indicates that the node's CPU resources are fully utilized (usage equals the total allocatable CPU).
+
+**Sampling Frequency:** The metric is sampled every 60 seconds.
+
+**Data Visibility Delay:** After sampling, data is not visible for up to 240 seconds. This means there might be a delay of up to 240 seconds before the metric data is available for querying and visualization.
+
+**Interpretation:** The "node/cpu/allocatable_utilization" metric is useful for monitoring the CPU resource utilization of individual nodes in a Kubernetes cluster. If the value is close to 1, it indicates that the node's CPU resources are almost fully utilized, which might indicate that the node is under heavy load. On the other hand, if the value is closer to 0, it suggests that the node has available CPU resources and is not heavily burdened.
+
+**Resource Type "k8s_node":** This metric is associated with Kubernetes nodes and can be used to monitor the CPU allocatable utilization of individual nodes in the cluster.
+
+Overall, the "node/cpu/allocatable_utilization" metric provides insights into how efficiently CPU resources are utilized on each node in your Kubernetes cluster. Monitoring this metric helps ensure that your nodes have adequate CPU capacity to handle the workload and can assist in capacity planning and resource optimization to maintain a healthy and well-utilized Kubernetes cluster.
+
+
+--------------------------------
+
+The metric "node/cpu/total_cores" is a Google Cloud Monitoring metric that provides information about the total number of CPU cores available on a node in a Kubernetes cluster. Here's a breakdown of the metric:
+
+**Metric Name:** node/cpu/total_cores
+
+**Status:** GA (Generally Available)
+
+**Type:** GAUGE
+
+**Value Type:** DOUBLE
+
+**Default Aggregation:** {cpu} (Sum)
+
+**Resource Type:** k8s_node
+
+**Description:** The "node/cpu/total_cores" metric represents the total number of CPU cores on the node. It provides the count of CPU cores available for computation on the node.
+
+**Sampling Frequency:** The metric is sampled every 60 seconds.
+
+**Interpretation:** The "node/cpu/total_cores" metric is useful for understanding the total CPU capacity available on each node in a Kubernetes cluster. It indicates the number of CPU cores that can be used to run container workloads and handle computation tasks on the node.
+
+**Resource Type "k8s_node":** This metric is associated with Kubernetes nodes and can be used to monitor the total CPU core count of individual nodes in the cluster.
+
+Overall, the "node/cpu/total_cores" metric provides important information about the compute capacity of each node in your Kubernetes cluster. Monitoring this metric helps you assess the total CPU resources available in your cluster and make informed decisions about workload distribution, resource allocation, and overall cluster capacity planning.
+
+
+------------------------------
+
+The metric "node/memory/allocatable_utilization" is a Google Cloud Monitoring metric that provides information about the memory allocatable utilization of a node in a Kubernetes cluster. Here's a breakdown of the metric:
+
+**Metric Name:** node/memory/allocatable_utilization
+
+**Status:** GA (Generally Available)
+
+**Type:** GAUGE
+
+**Value Type:** DOUBLE
+
+**Default Aggregation:** 1 (Mean)
+
+**Resource Type:** k8s_node
+
+**Description:** The "node/memory/allocatable_utilization" metric represents the fraction of the memory allocatable that is currently in use on the node. The value of this metric can range from 0 to 1, where 0 indicates that the node's memory resources are not being used, and 1 indicates that the node's memory resources are fully utilized (usage equals the total allocatable memory bytes).
+
+**Dimensions:**
+- **memory_type:** The memory type, which can be either `evictable` or `non-evictable`.
+  - Evictable memory is memory that can be easily reclaimed by the kernel, such as cached data that can be cleared if needed.
+  - Non-evictable memory is memory that cannot be easily reclaimed by the kernel, such as memory used by certain kernel components or pinned memory.
+- **component:** Name of the respective system daemon.
+
+**Sampling Frequency:** The metric is sampled every 60 seconds.
+
+**Data Visibility Delay:** After sampling, data is not visible for up to 120 seconds. This means there might be a delay of up to 120 seconds before the metric data is available for querying and visualization.
+
+**Interpretation:** The "node/memory/allocatable_utilization" metric is useful for monitoring the memory resource utilization of individual nodes in a Kubernetes cluster. If the value is close to 1, it indicates that the node's memory resources are almost fully utilized, which might indicate that the node is under heavy memory load. On the other hand, if the value is closer to 0, it suggests that the node has available memory resources and is not heavily burdened.
+
+**Resource Type "k8s_node":** This metric is associated with Kubernetes nodes and can be used to monitor the memory allocatable utilization of individual nodes in the cluster.
+
+Overall, the "node/memory/allocatable_utilization" metric provides insights into how efficiently memory resources are utilized on each node in your Kubernetes cluster. Monitoring this metric helps ensure that your nodes have adequate memory capacity to handle the workload and can assist in capacity planning and resource optimization to maintain a healthy and well-utilized Kubernetes cluster. Additionally, the distinction between evictable and non-evictable memory can provide insights into different memory usage patterns and resource reclaimability by the kernel.
