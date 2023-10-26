@@ -1,0 +1,63 @@
+Certainly! Here's a README for the Python script that deletes pods in multiple Kubernetes namespaces while excluding specified namespaces:
+
+---
+
+# Delete Pods in Multiple Kubernetes Namespaces
+
+This Python script allows you to delete pods in multiple Kubernetes namespaces, excluding the ones you specify in the `excluded_namespaces` list. It's a handy tool for performing maintenance or cleanup tasks in a Kubernetes cluster with fine-grained control over which namespaces to exclude.
+
+## Prerequisites
+
+Before using this script, ensure you have the following prerequisites in place:
+
+- Python 3 installed on your system.
+- `kubectl` configured and installed on your machine. You should have the necessary permissions to delete pods in the specified namespaces.
+
+## Usage
+
+1. Clone this repository to your local machine.
+
+2. Open the script (`delete_pods.py`) in a text editor.
+
+3. Modify the `excluded_namespaces` list at the beginning of the script to specify the namespaces you want to exclude from pod deletion.
+
+```python
+# Set the namespaces you want to exclude
+excluded_namespaces = ["kube-system", "default"]
+```
+
+4. Save your changes.
+
+5. Open a terminal and navigate to the directory where the script is located.
+
+6. Run the script using the following command:
+
+```bash
+python delete_pods.py
+```
+
+7. The script will delete all pods in the namespaces that are not in the `excluded_namespaces` list.
+
+**Caution**: Make sure you understand the implications of deleting pods in your namespaces. This action cannot be undone.
+
+## Customization
+
+You can customize this script to fit your specific needs:
+
+- Add additional error handling or logging to improve script robustness.
+- Integrate the script into your automation, CI/CD pipelines, or Kubernetes operations.
+- Extend the script to include more complex operations or conditions.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- This script is a simple example of interacting with the Kubernetes API using Python and the Kubernetes Python client library. It may serve as a starting point for more advanced Kubernetes automation tasks.
+
+Feel free to adapt and extend this script to meet your specific use cases.
+
+---
+
+This README provides an overview of the Python script and instructions on how to use it. Customize it as needed to include details about your project or organization.
