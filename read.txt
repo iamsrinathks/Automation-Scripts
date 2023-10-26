@@ -1,3 +1,55 @@
+Certainly! Here's a README for your repository with the provided content:
+
+---
+
+# Stratos GKE Automation Scripts
+
+Welcome to the Stratos GKE Automation Scripts repository! This repository contains a collection of automation scripts created by the Stratos GKE team. These scripts are designed to assist engineers and make various tasks more efficient, simplifying your workflow.
+
+## About
+
+At Stratos GKE, we are dedicated to simplifying and streamlining Kubernetes and Google Kubernetes Engine (GKE) operations. Our team has created a set of automation scripts to address common challenges and tasks encountered in the world of Kubernetes.
+
+## Usage
+
+Feel free to explore and use the scripts in this repository to automate various Kubernetes and GKE-related operations. These scripts are intended to help you:
+
+- Improve the management of your Kubernetes clusters.
+- Simplify deployment processes.
+- Enhance the monitoring and maintenance of your infrastructure.
+
+## Contribution
+
+We welcome contributions from the community. If you have additional scripts or improvements to existing ones, please consider opening a pull request. Together, we can build a valuable collection of automation tools for the Kubernetes and GKE ecosystem.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+If you have any questions, suggestions, or feedback, please don't hesitate to reach out to the Stratos GKE team.
+
+## Acknowledgments
+
+We would like to thank the open-source community for its continuous contributions and support. Together, we can make Kubernetes and GKE operations more efficient and accessible.
+
+---
+
+This README provides an introduction to your repository, its purpose, and how to use the automation scripts contained within. You can customize it further to include additional details specific to your project or organization.
+
+
+
+
+
+
+
+
+
+
+
+
+
 ExternalDNS automates updating DNS records as part of the deployment of a public facing web application. Thus, you do not need to use different tools to update corresponding DNS records to support the application, just only Kubernetes is needed.
 This tutorial demonstrates how to setup and configure this on Google Kubernetes Engine (GKE) and Cloud DNS zones.
 📔 NOTE: This was tested on following below and may not work if versions are significantly different.
