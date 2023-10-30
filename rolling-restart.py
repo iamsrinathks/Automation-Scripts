@@ -1,49 +1,34 @@
-from kubernetes import client, config
+import subprocess
 
-# Set the namespaces you want to exclude from listing resources
-excluded_namespaces = ["kube-system", "namespace-to-exclude"]  # Add namespaces to exclude here
+def list_resources_excluding_namespaces(excluded_namespaces):
+  """Lists all the resources in the cluster excluding the specified namespaces.
 
-def list_resources(api_instance, resource_type, namespace=""):
-    if namespace:
-        resource_list = api_instance.list_namespaced_custom_object("apps", resource_type, namespace)
-    else:
-        resource_list = api_instance.list_custom_resource("apps", resource_type)
+  Args:
+    excluded_namespaces: A list of namespace names to exclude.
 
-    return resource_list
+  Returns:
+    A list of all the resources in the cluster, excluding the specified namespaces.
+  """
 
-def main():
-    # Load the Kubernetes configuration
-    config.load_kube_config()
+  # Get a list of all the resources in the cluster.
+  all_resources = subprocess.check_output(["kubectl", "get", "all", "-A"], text=True).splitlines()
 
-    # Create a Kubernetes API client
-    api_instance = client.CustomObjectsApi()
-    v1 = client.CoreV1Api()
+  # Exclude the specified namespaces.
+  filtered_resources = []
+  for resource in all_resources:
+    if not resource.startswith(excluded_namespaces):
+      filtered_resources.append(resource)
 
-    # List all namespaces
-    namespaces = v1.list_namespace().items
+  return filtered_resources
 
-    # List resources in each namespace that is not excluded
-    for namespace in namespaces:
-        if namespace.metadata.name not in excluded_namespaces:
-            print(f"Listing resources in namespace: {namespace.metadata.name}")
+# Example usage:
 
-            # List your desired resources here, e.g., Deployments, StatefulSets, DaemonSets
-            deployments = list_resources(api_instance, "Deployment", namespace.metadata.name)
-            statefulsets = list_resources(api_instance, "StatefulSet", namespace.metadata.name)
-            daemonsets = list_resources(api_instance, "DaemonSet", namespace.metadata.name)
-            pods = api_instance.list_namespaced_pod(namespace.metadata.name)
+excluded_namespaces = ["kube-system", "default"]
+filtered_resources = list_resources_excluding_namespaces(excluded_namespaces)
 
-            # Process and print the resources as needed
-            # You can iterate through deployments, statefulsets, daemonsets, or pods
-            # and perform actions based on your requirements.
-
-        else:
-            print(f"Skipping namespace: {namespace.metadata.name}")
-
-if __name__ == "__main__":
-    main()
-
-
+# Print the filtered list of resources.
+for resource in filtered_resources:
+  print(resource)
 
 
 
