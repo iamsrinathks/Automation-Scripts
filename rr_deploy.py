@@ -1,12 +1,15 @@
-from kubernetes import dynamic
+from kubernetes import dynamic, config
 from kubernetes.client import api_client
 import datetime
 
 # Define excluded namespaces
 excluded_namespaces = ["kube-system", "default", "excluded-namespace-1", "excluded-namespace-2"]
 
+# Load Kubernetes configuration
+config.load_kube_config()
+
 # Create a dynamic client
-client = dynamic.DynamicClient(api_client.ApiClient(configuration=configuration))
+client = dynamic.DynamicClient(api_client.ApiClient())
 
 # Get a reference to the Deployment resource
 api = client.resources.get(api_version="apps/v1", kind="Deployment")
