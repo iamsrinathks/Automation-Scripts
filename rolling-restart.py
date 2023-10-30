@@ -49,10 +49,10 @@ def main():
     v1 = client.CoreV1Api()
 
     # List all namespaces
-    namespaces = v1.list_namespace()
+    namespaces = v1.list_namespace().items
 
     # Perform a rolling restart for each namespace that is not excluded
-    for namespace in namespaces.items:
+    for namespace in namespaces:
         if namespace.metadata.name not in excluded_namespaces:
             print(f"Listing resources in namespace: {namespace.metadata.name}")
             perform_rolling_restart(api_instance, namespace.metadata.name)
