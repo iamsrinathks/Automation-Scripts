@@ -50,6 +50,12 @@ def main():
     # List all namespaces
     namespaces = api_instance.list_namespace()
 
+    # Confirm with the user before proceeding with the rolling restart
+    confirmation = input("Do you want to proceed with the rolling restart? (yes/no): ").strip().lower()
+    if confirmation != "yes":
+        print("Rolling restart aborted.")
+        return
+
     # Perform a rolling restart for each namespace that is not excluded
     for namespace in namespaces.items:
         if namespace.metadata.name not in excluded_namespaces:
