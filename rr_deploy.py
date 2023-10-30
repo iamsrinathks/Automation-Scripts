@@ -1,5 +1,6 @@
 from kubernetes import dynamic, config
 import datetime
+from kubernetes.client import api_client
 
 # Define excluded namespaces
 excluded_namespaces = ["kube-system", "default", "excluded-namespace-1", "excluded-namespace-2"]
@@ -7,8 +8,8 @@ excluded_namespaces = ["kube-system", "default", "excluded-namespace-1", "exclud
 # Load Kubernetes configuration
 config.load_kube_config()
 
-# Create a dynamic client
-client = dynamic.DynamicClient()
+# Create a dynamic client with the api_client
+client = dynamic.DynamicClient(api_client.ApiClient())
 
 # Retrieve the list of all namespaces
 all_namespaces = client.resources.get(api_version="v1", kind="Namespace").get()
