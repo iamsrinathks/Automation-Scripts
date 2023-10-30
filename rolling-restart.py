@@ -46,15 +46,10 @@ def main():
 
     # Create a Kubernetes API client
     api_instance = client.CustomObjectsApi()
+    v1 = client.CoreV1Api()
 
     # List all namespaces
-    namespaces = api_instance.list_namespace()
-
-    # Confirm with the user before proceeding with the rolling restart
-    confirmation = input("Do you want to proceed with the rolling restart? (yes/no): ").strip().lower()
-    if confirmation != "yes":
-        print("Rolling restart aborted.")
-        return
+    namespaces = v1.list_namespace()
 
     # Perform a rolling restart for each namespace that is not excluded
     for namespace in namespaces.items:
