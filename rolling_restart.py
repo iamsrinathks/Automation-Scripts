@@ -1,6 +1,4 @@
 from kubernetes import client, config
-from kubernetes.client import Configuration, ApiClient
-import os
 
 # Define the namespaces to be excluded from the rolling restart
 excluded_namespaces = ["kube-system", "default"]
@@ -8,12 +6,8 @@ excluded_namespaces = ["kube-system", "default"]
 # Load Kubernetes configuration from the default location
 config.load_kube_config()
 
-# Create a Kubernetes API client
-configuration = Configuration()
-api_client = ApiClient(configuration=configuration)
-
-# Create a Kubernetes API instance
-api_instance = client.AppsV1Api(api_client)
+# Create a Kubernetes API instance for working with Deployments
+api_instance = client.AppsV1Api()
 
 # Define the resource type you want to restart (e.g., "Deployment" or "StatefulSet")
 resource_type = "Deployment"
@@ -31,7 +25,7 @@ def rolling_restart(namespace):
         print(f"Error: {e}")
 
 # Get a list of all namespaces (excluding the excluded ones)
-v1 = client.CoreV1Api(api_client)
+v1 = client.CoreV1Api()
 namespace_list = v1.list_namespace()
 eligible_namespaces = [ns.metadata.name for ns in namespace_list.items if ns.metadata.name not in excluded_namespaces]
 
