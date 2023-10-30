@@ -16,7 +16,11 @@ def list_resources_excluding_namespaces(excluded_namespaces):
   # Exclude the specified namespaces.
   filtered_resources = []
   for resource in all_resources:
-    if not resource.startswith(excluded_namespaces):
+    # Convert the excluded_namespaces list to a tuple before passing it to the startswith() method.
+    excluded_namespaces_tuple = tuple(excluded_namespaces)
+
+    # If the resource name does not start with any of the excluded namespaces, add it to the filtered list.
+    if not any(namespace.startswith(excluded_namespaces_tuple) for namespace in excluded_namespaces):
       filtered_resources.append(resource)
 
   return filtered_resources
