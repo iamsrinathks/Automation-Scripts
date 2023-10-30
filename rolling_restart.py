@@ -39,22 +39,21 @@ print("Rolling restarts in all eligible namespaces completed.")
 
 
 ---------
-
-import subprocess
+#!/bin/bash
 
 # Define the excluded namespaces
-excluded_namespaces = ["kube-system", "default", "excluded-namespace-1", "excluded-namespace-2"]
+excluded_namespaces=("kube-system" "default" "excluded-namespace-1" "excluded-namespace-2")
 
 # Get a list of all namespaces
-all_namespaces = subprocess.check_output("kubectl get namespaces -o custom-columns=NAME:.metadata.name --no-headers", shell=True).decode("utf-8").split()
+all_namespaces=$(kubectl get namespaces -o custom-columns=NAME:.metadata.name --no-headers)
 
-# Determine eligible namespaces by excluding the ones in the exclusion list
-eligible_namespaces = [ns for ns in all_namespaces if ns not in excluded_namespaces]
+# Iterate through the eligible namespaces and perform rolling restart for all Deployments
+for namespace in $all_namespaces; do
+    # Check if the namespace is not in the exclusion list
+    if [[ ! " ${excluded_namespaces[@]} " =~ " ${namespace} " ]]; then
+        echo "Performing rolling restart in namespace: $namespace"
+        kubectl rollout restart deployment --all -n "$namespace"
+    fi
+done
 
-# Define the Deployment name
-deployment_name = "your-deployment-name"
-
-# Iterate through the eligible namespaces and perform rolling restart
-for namespace in eligible_namespaces:
-    subprocess.call(f"kubectl rollout restart deployment/{deployment_name} -n {namespace}", shell=True)
 
