@@ -37,23 +37,3 @@ for namespace in eligible_namespaces:
 print("Rolling restarts in all eligible namespaces completed.")
 
 
-
----------
-#!/bin/bash
-
-# Define the excluded namespaces
-excluded_namespaces=("kube-system" "default" "excluded-namespace-1" "excluded-namespace-2")
-
-# Get a list of all namespaces
-all_namespaces=$(kubectl get namespaces -o custom-columns=NAME:.metadata.name --no-headers)
-
-# Iterate through the eligible namespaces and perform rolling restart for all Deployments
-for namespace in $all_namespaces; do
-    # Check if the namespace is not in the exclusion list
-    if [[ ! " ${excluded_namespaces[@]} " =~ " ${namespace} " ]]; then
-        echo "Performing rolling restart in namespace: $namespace"
-        kubectl rollout restart deployment --all -n "$namespace"
-    fi
-done
-
-
