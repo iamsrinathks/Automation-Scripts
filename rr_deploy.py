@@ -1,31 +1,43 @@
-from kubernetes import dynamic, config
+from kubernetes import client, config
 import datetime
-from kubernetes.client import api_client
 
-# Define excluded namespaces
+# Define the annotation to add
+annotation_key = "kubectl.kubernetes.io/restartedAt"
+annotation_value = datetime.datetime.utcnow().isoformat()
+
+# Define namespaces to exclude
 excluded_namespaces = ["kube-system", "default", "excluded-namespace-1", "excluded-namespace-2"]
 
 # Load Kubernetes configuration
 config.load_kube_config()
 
-# Create a dynamic client with the api_client
-client = dynamic.DynamicClient(api_client.ApiClient())
+# Create a Kubernetes API client
+api_client = client.CoreV1Api()
 
-# Retrieve the list of all namespaces
-all_namespaces = client.resources.get(api_version="v1", kind="Namespace").get()
+# List all namespaces
+namespace_list = api_client.list_namespace()
 
-# Iterate through all namespaces
-for ns in all_namespaces.items:
-    namespace = ns.metadata.name
-    if namespace not in excluded_namespaces:
-        # Get a reference to Deployments in the current namespace
-        deployments = client.resources.get(api_version="apps/v1", kind="Deployment", namespace=namespace).get()
+# Iterate through namespaces and Deployments
+for namespace in namespace_list.items:
+    namespace_name = namespace.metadata.name
+    if namespace_name not in excluded_namespaces:
+        api_instance = client.AppsV1Api()
 
-        # Iterate through Deployments in the current namespace and patch each one
-        for deployment in deployments.items:
+        # List Deployments in the current namespace
+        deployment_list = api_instance.list_namespaced_deployment(namespace_name)
+
+        for deployment in deployment_list.items:
             deployment_name = deployment.metadata.name
-            deployment_manifest = client.resources.get(api_version="apps/v1", kind="Deployment", namespace=namespace, name=deployment_name).get().to_dict()
-            deployment_manifest["spec"]["template"]["metadata"]["annotations"] = {
-                "kubectl.kubernetes.io/restartedAt": datetime.datetime.utcnow().isoformat()
-            }
-            client.resources.get(api_version="apps/v1", kind="Deployment", namespace=namespace, name=deployment_name).patch(body=deployment_manifest)
+            deployment_namespace = deployment.metadata.namespace
+
+            # Get the current Deployment
+            current_deployment = api_instance.read_namespaced_deployment(deployment_name, deployment_namespace)
+
+            # Add or update the annotation
+            if annotation_key not in current_deployment.spec.template.metadata.annotations:
+                current_deployment.spec.template.metadata.annotations[annotation_key] = annotation_value
+
+            # Apply the update
+            api_instance.patch_namespaced_deployment(deployment_name, deployment_namespace, current_deployment)
+
+print("Annotations added to Deployments in eligible namespaces.")
