@@ -16,28 +16,33 @@ api_client = client.CoreV1Api()
 
 # List all namespaces
 namespace_list = api_client.list_namespace()
+if not namespace_list:
+    print("No namespaces found.")
+else:
+    # Iterate through namespaces and Deployments
+    for namespace in namespace_list.items:
+        namespace_name = namespace.metadata.name
+        if namespace_name not in excluded_namespaces:
+            api_instance = client.AppsV1Api()
 
-# Iterate through namespaces and Deployments
-for namespace in namespace_list.items:
-    namespace_name = namespace.metadata.name
-    if namespace_name not in excluded_namespaces:
-        api_instance = client.AppsV1Api()
+            # List Deployments in the current namespace
+            deployment_list = api_instance.list_namespaced_deployment(namespace_name)
 
-        # List Deployments in the current namespace
-        deployment_list = api_instance.list_namespaced_deployment(namespace_name)
+            for deployment in deployment_list.items:
+                deployment_name = deployment.metadata.name
+                deployment_namespace = deployment.metadata.namespace
 
-        for deployment in deployment_list.items:
-            deployment_name = deployment.metadata.name
-            deployment_namespace = deployment.metadata.namespace
+                # Get the current Deployment
+                current_deployment = api_instance.read_namespaced_deployment(deployment_name, deployment_namespace)
 
-            # Get the current Deployment
-            current_deployment = api_instance.read_namespaced_deployment(deployment_name, deployment_namespace)
-
-            # Add or update the annotation
-            if annotation_key not in current_deployment.spec.template.metadata.annotations:
+                # Check if annotations exist, or create it if it doesn't
+                if "annotations" not in current_deployment.spec.template.metadata:
+                    current_deployment.spec.template.metadata.annotations = {}
+                
+                # Add or update the annotation
                 current_deployment.spec.template.metadata.annotations[annotation_key] = annotation_value
 
-            # Apply the update
-            api_instance.patch_namespaced_deployment(deployment_name, deployment_namespace, current_deployment)
+                # Apply the update
+                api_instance.patch_namespaced_deployment(deployment_name, deployment_namespace, current_deployment)
 
-print("Annotations added to Deployments in eligible namespaces.")
+    print("Annotations added to Deployments in eligible namespaces.")
