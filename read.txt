@@ -1,10 +1,10 @@
-Certainly! Here's a README for the script that adds annotations to Deployments in Kubernetes clusters:
+Here's a README for the script that lists resources in Kubernetes namespaces while excluding specific namespaces:
 
 ---
 
-# Kubernetes Deployment Annotation Script
+# Kubernetes Resource Listing Script
 
-This Python script automates the process of adding annotations to Deployments in Kubernetes namespaces while excluding specific namespaces. The script also provides a clear and concise README for documentation purposes.
+This Python script simplifies the process of listing resources in Kubernetes namespaces. It allows you to exclude specific namespaces and lists resources such as Pods, Services, and Deployments in eligible namespaces.
 
 ## Prerequisites
 
@@ -30,32 +30,31 @@ This Python script automates the process of adding annotations to Deployments in
 
 1. Customize the script:
 
-   - Modify the `excluded_namespaces` list to specify namespaces you want to exclude from annotation updates.
-   - You can also modify the annotation key and value to meet your requirements.
+   - Modify the `excluded_namespaces` list to specify namespaces you want to exclude from resource listing.
+   - You can add more resource types to the `list_resources_in_namespace` function as needed.
 
 2. Run the script:
 
    ```bash
-   python add_annotation_to_deployments.py
+   python list_resources_in_namespaces.py
    ```
 
 The script will perform the following tasks:
 
 - Iterate through all namespaces.
-- For eligible namespaces (excluding those listed in `excluded_namespaces`):
-  - Add the specified annotation to the Deployments' pod templates.
+- For eligible namespaces (excluding those listed in `excluded_namespaces`), it will list resources including Pods, Services, Deployments, and any other resource types you've added.
 
-After running the script, you can check your Deployments in eligible namespaces to confirm that the annotations have been added.
+After running the script, you can review the resources in the eligible namespaces to gain insights into your Kubernetes cluster's configuration and status.
 
 ## Example
 
 ```bash
-python add_annotation_to_deployments.py
+python list_resources_in_namespaces.py
 ```
 
 ## Note
 
-- This script does not perform any updates or deletions of Deployments, it only adds annotations to their pod templates.
+- This script is read-only and does not perform any updates or deletions of resources in the cluster.
 
 ## License
 
@@ -63,89 +62,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- This script simplifies the process of adding annotations to Deployments in Kubernetes namespaces, making it easier to manage and monitor your cluster.
-
----
-
-You can use this README as documentation for the script, and feel free to customize it further to match your specific environment and requirements.
-
-
-
-
-
-
-
-
-
-
-
-
-Here's a README for the script that lists the status of pods in Kubernetes namespaces while excluding specific namespaces:
-
----
-
-# Kubernetes Pod Status Script
-
-This Python script allows you to view the status of pods in Kubernetes namespaces while excluding specified namespaces. It also calculates and displays the age of each pod in a human-readable format.
-
-## Prerequisites
-
-- Python 3.x
-- Kubernetes cluster with `kubectl` configured
-- `kubernetes` Python client library (`pip install kubernetes`)
-
-## Installation
-
-1. Install the required Python library if you haven't already:
-
-   ```bash
-   pip install kubernetes
-   ```
-
-2. Configure your `kubectl` to ensure the script has access to your Kubernetes cluster:
-
-   ```bash
-   kubectl config use-context your-kube-context
-   ```
-
-## Usage
-
-1. Customize the script:
-
-   - Modify the `excluded_namespaces` list to specify namespaces you want to exclude from pod status listing.
-
-2. Run the script:
-
-   ```bash
-   python list_pod_status.py
-   ```
-
-The script will perform the following tasks:
-
-- Iterate through all namespaces.
-- For eligible namespaces (excluding those listed in `excluded_namespaces`):
-  - List the status of pods, including their phase and conditions.
-  - Calculate the age of each pod and display it in a human-readable format (seconds, minutes, or hours).
-
-After running the script, you can check the status and age of pods in the eligible namespaces to monitor their health and runtime.
-
-## Example
-
-```bash
-python list_pod_status.py
-```
-
-## Note
-
-- This script is read-only and does not perform any updates or deletions of pods or namespaces.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- This script simplifies the process of monitoring pod status in Kubernetes namespaces, providing valuable insights into the health and age of pods.
+- This script streamlines the process of resource discovery in Kubernetes namespaces, making it easier to understand the cluster's structure and contents.
 
 ---
 
