@@ -35,10 +35,14 @@ else:
                 # Get the current Deployment
                 current_deployment = api_instance.read_namespaced_deployment(deployment_name, deployment_namespace)
 
+                # Check if metadata exists, or create it if it doesn't
+                if not current_deployment.spec.template.metadata:
+                    current_deployment.spec.template.metadata = client.V1ObjectMeta()
+
                 # Check if annotations exist, or create it if it doesn't
-                if "annotations" not in current_deployment.spec.template.metadata:
+                if not current_deployment.spec.template.metadata.annotations:
                     current_deployment.spec.template.metadata.annotations = {}
-                
+
                 # Add or update the annotation
                 current_deployment.spec.template.metadata.annotations[annotation_key] = annotation_value
 
