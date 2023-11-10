@@ -1,0 +1,96 @@
+Introduction:
+
+In a private cluster environment using Anthos Config Management (ACM), securely managing and accessing sensitive information, such as Git Personal Access Tokens (PAT), poses a unique challenge. PAT tokens are essential for authenticating with Git repositories, especially when deploying ACM add-ons from GitHub. This process requires a robust solution to securely fetch and manage these secrets within a private cluster. To address this challenge, we leverage a combination of Google Secret Manager, Helm, and Container Storage Interface (CSI) Driver.
+
+Challenges:
+
+1. **Private Cluster Security:**
+   - Private clusters restrict external access, ensuring heightened security. However, this makes it challenging to securely introduce external dependencies like Git PAT tokens for ACM to connect with GitHub.
+
+2. **Secret Management:**
+   - Storing sensitive information, such as Git PAT tokens, in a secure and manageable way is crucial. Google Secret Manager provides a secure and centralized solution for storing and accessing secrets.
+
+3. **Bootstrapping ConfigSync:**
+   - Configuring ACM's ConfigSync on a private cluster requires a streamlined process to initialize the system. Fetching Git credentials securely during this bootstrapping process becomes a critical requirement.
+
+4. **Automation for Configuration Management:**
+   - Efficient automation for configuration management is essential. The need to fetch Git credentials, deploy Helm charts, and configure ACM in a private environment demands a systematic and secure solution.
+
+Solution Overview:
+
+The solution involves creating a Helm chart that encapsulates the necessary components:
+- **CSI Driver:** Manages the interaction between Kubernetes and external storage systems, in this case, Google Secret Manager.
+- **SecretProviderClass:** Defines how secrets are fetched from Google Secret Manager.
+- **Pod Configuration:** Describes the deployment of a pod that uses the CSI Driver and SecretProviderClass to fetch Git PAT tokens.
+
+This Helm chart, when rendered and deployed using ConfigSync, sets up the necessary infrastructure to securely handle Git credentials. The private cluster is bootstrapped, ConfigSync establishes connectivity with GitHub, and ACM can deploy add-ons seamlessly.
+
+By orchestrating the components mentioned above, the solution addresses the challenges posed by private clusters, ensuring secure and automated handling of secrets for Git authentication in ACM deployments.
+
+
+----------------------------------------
+
+
+
+
+  **Document: Integrating ACM with Git PAT Token and Harness Delegate in Private GKE Cluster**
+
+*Introduction:*
+
+In the context of a private Google Kubernetes Engine (GKE) cluster, challenges arise when initializing Anthos Config Management (ACM). A key challenge is the need to securely bring in the GitHub Personal Access Token (Git PAT) required by ACM to deploy addons from GitHub. Additionally, to interact with the Harness platform, a secure integration of the Harness Delegate into the private cluster is essential.
+
+*Challenges:*
+
+1. **ACM Git PAT Token:**
+   - ACM requires a Git PAT token to authenticate and access GitHub repositories.
+   - Private clusters restrict direct connectivity to GitHub, making it challenging to securely introduce the Git PAT token.
+
+2. **Harness Delegate Integration:**
+   - Harness Delegates require secure initialization in the private cluster.
+   - Access to sensitive information like Delegate Tokens must be managed securely from Google Secret Manager.
+
+*Solution Overview:*
+
+1. **CSI Driver for Secrets:**
+   - A CSI driver Helm chart is developed with three sub-charts: `csi-driver`, `csi-driver-provider-gcp`, and `csi-driver-git-secret-sync`.
+   - The `csi-driver-git-secret-sync` sub-chart is crucial for securely fetching the Git PAT token from Google Secret Manager.
+
+2. **ACM Git PAT Token Retrieval:**
+   - Using the `csi-driver-git-secret-sync` chart, ACM retrieves the Git PAT token securely from Google Secret Manager.
+   - This token is utilized by ACM during the deployment of addons from GitHub.
+
+3. **Harness Delegate Integration:**
+   - A Helm chart for deploying the Harness Delegate into the private GKE cluster is developed.
+   - The Helm chart includes configurations for the Delegate's environment, dependencies, and security parameters.
+
+4. **SecretProviderClass for Delegate Token:**
+   - Similar to the Git PAT token solution, a SecretProviderClass is employed to securely fetch the Delegate Token from Google Secret Manager.
+   - This ensures that the Harness Delegate has secure access to its required credentials.
+
+5. **Integration with ConfigSync:**
+   - The Helm chart for the Harness Delegate, along with the SecretProviderClass, is included in the ConfigSync configuration.
+   - ConfigSync deploys and manages the Harness Delegate seamlessly during the private cluster initialization.
+
+6. **Secure Environment Initialization:**
+   - As the private cluster initializes, ConfigSync deploys the Harness Delegate, which securely fetches its required credentials using the SecretProviderClass.
+
+7. **Error Handling and Logging:**
+   - Robust error handling mechanisms and logging capabilities are incorporated into the solution for effective issue diagnosis and resolution.
+
+*Conclusion:*
+
+The integrated solution ensures a secure and streamlined process for initializing ACM with the Git PAT token and deploying the Harness Delegate in a private GKE cluster. This approach facilitates secure communication
+between ACM, GitHub, and the Harness platform, addressing the challenges posed by private cluster restrictions.
+
+
+
+
+
+
+
+RootSync Initialization:
+The first step involves the creation of an Init RootsSync, an OCI sync representing the tar of the CSI Helm chart and the Git RootSync configurations.
+Git RootSync Deployment:
+The RootSync, containing Git configuration details, syncs with GitHub to retrieve other RootSync configurations maintained in GitHub.
+Complete ACM Initialization:
+With the RootSyncs in place, ACM is fully initialized, deploying configurations and addons as specified in the GitHub repository.
