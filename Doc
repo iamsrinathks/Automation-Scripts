@@ -1,3 +1,7 @@
+The reason behind this request is that we require these permissions to effectively manage the creation, deletion, and updating of the GCP Cloud Workstation clusters and workstation configurations. While I acknowledge that this role was initially designated as read-only, the evolving needs of our data curation team necessitate these expanded permissions.
+
+As part of our responsibilities, it is essential for us to have the capability to create and manage GCP Cloud Workstations entirely. This includes the setup and maintenance of associated configurations to ensure seamless workflow operations within our team.
+
 Monitoring and Alerting in Google Kubernetes Engine (GKE)
 
 Monitoring and alerting are critical aspects of managing and maintaining the health and performance of applications running on Google Kubernetes Engine (GKE). GKE provides a robust set of tools and features for capturing various metrics and events, enabling real-time insights into the cluster and applications. This document aims to provide an overview of the key monitoring capabilities and best practices in GKE.
