@@ -2,10 +2,10 @@ The reason behind this request is that we require these permissions to effective
 
 
 resource "google_spanner_database" "example_database" {
-  for_each = { for idx, name in module.another_module.db_names : idx => name }
+  for_each = { for idx in range(var.database_count) : idx => idx }
 
   instance = google_spanner_instance.example_instance.name
-  name     = each.value
+  name     = "module.naming.db_name-${module.naming.db_names[each.value]}"  # Use names from the output of the naming module
   # Add other database configuration...
 }
 
