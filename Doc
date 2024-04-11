@@ -1,5 +1,14 @@
 The reason behind this request is that we require these permissions to effectively manage the creation, deletion, and updating of the GCP Cloud Workstation clusters and workstation configurations. While I acknowledge that this role was initially designated as read-only, the evolving needs of our data curation team necessitate these expanded permissions.
 
+
+resource "google_spanner_database" "example_database" {
+  for_each = { for idx, name in module.another_module.db_names : idx => name }
+
+  instance = google_spanner_instance.example_instance.name
+  name     = each.value
+  # Add other database configuration...
+}
+
 As part of our responsibilities, it is essential for us to have the capability to create and manage GCP Cloud Workstations entirely. This includes the setup and maintenance of associated configurations to ensure seamless workflow operations within our team.
 
 Monitoring and Alerting in Google Kubernetes Engine (GKE)
