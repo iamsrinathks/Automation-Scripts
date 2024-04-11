@@ -1,12 +1,37 @@
 The reason behind this request is that we require these permissions to effectively manage the creation, deletion, and updating of the GCP Cloud Workstation clusters and workstation configurations. While I acknowledge that this role was initially designated as read-only, the evolving needs of our data curation team necessitate these expanded permissions.
 
 
-resource "google_spanner_database" "example_database" {
-  for_each = { for idx in range(var.database_count) : idx => idx }
+# Define a map variable for database roles
+variable "database_roles" {
+  type = map(string)
+  # Example values: { "db1": "roles/viewer", "db2": "roles/editor", ... }
+}
 
-  instance = google_spanner_instance.example_instance.name
-  name     = "module.naming.db_name-${module.naming.db_names[each.value]}"  # Use names from the output of the naming module
-  # Add other database configuration...
+# Use the output of another module to get the list of database names
+module "another_module" {
+  source = "./path/to/another_module"  # Replace with the actual path or module source
+
+  # Specify any required input variables for the module...
+}
+
+# Create IAM bindings for databases using the names from the output of another module
+resource "google_spanner_database_iam_binding" "database" {
+  for_each = { for db_name in module.another_module.db_names : db_name => db_name }
+
+  instance = "your-instance-name"
+  database = each.key
+  role     = var.database_roles[each.key]  # Retrieve the role for the current database name from the variable
+
+  members = [
+    "user:jane@example.com",
+    # Add other members or groups as needed...
+  ]
+
+  condition {
+    title       = "My Role"
+    description = "Grant permissions on my_role"
+    expression  = "(resource.type == \"spanner.googleapis.com/DatabaseRole\" && (resource.name.endsWith(\"/myrole\")))"
+  }
 }
 
 As part of our responsibilities, it is essential for us to have the capability to create and manage GCP Cloud Workstations entirely. This includes the setup and maintenance of associated configurations to ensure seamless workflow operations within our team.
