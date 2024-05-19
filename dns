@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Backup the original dhclient.conf file
+cp /etc/dhcp/dhclient.conf /etc/dhcp/dhclient.conf.bak
+
+# Add the prepend domain-name-servers line to dhclient.conf if it does not already exist
+grep -q "^prepend domain-name-servers 8.8.8.8, 8.8.4.4;" /etc/dhcp/dhclient.conf
+if [ $? -ne 0 ]; then
+    echo "prepend domain-name-servers 8.8.8.8, 8.8.4.4;" >> /etc/dhcp/dhclient.conf
+fi
+
+# Restart the networking service
+systemctl restart networking
