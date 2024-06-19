@@ -1,3 +1,37 @@
+Here's a draft description for the major change in the Terraform module:
+
+## Overview
+
+This change introduces a strategic solution to leverage DNS for all DNS resolutions within the environment. The primary objective is to update the nameserver configuration of the workbench instance dynamically during the startup process, ensuring seamless integration with the appropriate DNS infrastructure based on the target environment.
+
+## Key Changes
+
+### Dynamic Nameserver Configuration
+
+The Terraform module now includes logic to update the nameserver settings of the workbench instance through the startup script metadata. This update occurs during the instance initialization phase, allowing for a seamless transition to the desired DNS infrastructure.
+
+### Environment-Based Nameserver Selection
+
+The nameserver configuration is dynamically determined based on the target environment. This approach ensures that the workbench instance is correctly configured to leverage the appropriate DNS infrastructure, whether it's an on-premises Infoblox solution or a cloud-based DNS service.
+
+### Centralized DNS Resolution
+
+With this change, all DNS resolutions within the environment will be handled by the configured nameserver. This centralized approach streamlines the resolution process, enhancing consistency and reducing potential conflicts or misconfigurations.
+
+## Benefits
+
+1. **Improved DNS Resolution**: By leveraging a centralized DNS infrastructure, the environment benefits from consistent and reliable DNS resolution, reducing potential issues and improving overall performance.
+
+2. **Seamless Integration**: The dynamic nameserver configuration allows for seamless integration with various DNS infrastructures, whether on-premises or cloud-based, without requiring manual intervention or reconfiguration.
+
+3. **Scalability and Flexibility**: The modular design of the Terraform module enables easy scalability and flexibility, allowing for future enhancements or modifications to the DNS resolution strategy as needed.
+
+4. **Simplified Management**: By centralizing DNS resolution, the management and maintenance of the DNS infrastructure become more streamlined, reducing the overhead associated with managing multiple DNS configurations.
+
+## Implementation and Testing
+
+The changes introduced in this Terraform module have undergone thorough testing and validation to ensure seamless integration and compatibility with the target environments. Comprehensive documentation and guidelines will be provided to facilitate the adoption and deployment of this updated module.
+
 Monitoring and Alerting in Google Kubernetes Engine (GKE)
 
 Monitoring and alerting are critical aspects of managing and maintaining the health and performance of applications running on Google Kubernetes Engine (GKE). GKE provides a robust set of tools and features for capturing various metrics and events, enabling real-time insights into the cluster and applications. This document aims to provide an overview of the key monitoring capabilities and best practices in GKE.
