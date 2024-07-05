@@ -1,0 +1,32 @@
+DNS Resolution with Infoblox
+
+#### The Requirement
+As a DevOps Engineer at the organization, a new strategic direction mandated that all DNS resolutions, whether for internal services like GitHub Enterprise or Nexus, be routed through the on-premises Infoblox system. This requirement applied to all infrastructure, including the Vertex AI Workbench User Managed Jupyter Notebook instances, which run on Debian-based VMs.
+
+#### The Challenge Unveiled
+The primary task seemed straightforward: reconfigure the DNS settings so that every query would go through Infoblox. However, the unique environment of the Vertex AI Workbench, with its mix of VM and containerized applications, introduced complexities that weren't immediately apparent.
+
+#### Initial Configuration Attempts
+To meet the requirement, the initial approach involved updating the DNS configurations at both the VM and container levels. Changes were made to the DHCP client configuration and the hosts file to ensure that the VMs would point to the Infoblox DNS servers. Containers running the Jupyter Notebook were also configured to recognize Infoblox for DNS resolution.
+
+Despite following these standard procedures, the system began to exhibit unexpected behavior. Specifically, DNS queries to critical internal services, like `metadata.google.internal`, failed, disrupting essential operations within the Jupyter Notebooks.
+
+#### Investigative Journey
+This led to a deeper investigation. Logs were scrutinized, revealing that while the DNS settings appeared correct, the metadata resolution was not functioning as intended. This was puzzling, given that the necessary entries were present in the hosts file.
+
+The breakthrough came through a systematic review of the initialization scripts and startup processes. The issue was traced to the interaction between the network configuration scripts and the custom start-scripts used for initializing the VM and containers.
+
+#### Overcoming the Challenges
+To resolve the issue, a multi-faceted approach was taken:
+1. **Script Analysis and Refinement:** The custom start-scripts were meticulously analyzed and refined. It was crucial to ensure that these scripts executed in the correct sequence and that they applied the DNS settings without conflicting with other initialization processes.
+
+2. **Incremental Testing and Validation:** Instead of making all changes at once, an incremental approach was adopted. Each configuration change was applied and thoroughly tested, isolating the exact point where the DNS resolution failed. This step-by-step validation helped pinpoint the precise cause of the problem.
+
+3. **Collaboration and Knowledge Sharing:** The challenge was a team effort. Collaboration with network administrators and other engineers provided valuable insights into the Infoblox setup and network architecture. Sharing findings and documenting each step ensured that the process was transparent and could be replicated or adjusted by other team members.
+
+4. **Fallback Mechanisms:** To safeguard against disruptions, fallback mechanisms were implemented. These ensured that if a DNS resolution failed, the system could revert to a stable state, minimizing downtime and maintaining user productivity.
+
+#### The Resolution
+Through this rigorous process, the DNS configuration was successfully aligned with the organization's strategic direction. The Vertex AI Workbench User Managed Jupyter Notebooks now reliably use Infoblox for all DNS resolutions, ensuring compliance and enhancing network management capabilities.
+
+The journey underscored the importance of thorough testing, collaboration, and a deep understanding of both the infrastructure and the tools involved. The challenges faced and overcome during this process not only met the immediate requirement but also strengthened the team's ability to handle similar issues in the future, fostering a culture of resilience and continuous improvement.
