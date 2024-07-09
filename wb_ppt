@@ -1,0 +1,93 @@
+
+Today, I want to share with you a recent project we undertook to align our DNS resolution strategy with our organization’s strategic direction, specifically focusing on our Vertex AI Workbench User Managed Jupyter Notebooks. This initiative was critical in ensuring that all DNS resolutions, including those for internal services like GitHub Enterprise and Nexus, were handled by our on-prem Infoblox DNS system.
+
+### The Requirement
+
+Our strategic directive required that all DNS queries from our infrastructure route through Infoblox. This change aimed to enhance our DNS management capabilities and align with our overall network security policies. My task was to implement this change for the Vertex AI Workbench User Managed Jupyter Notebooks, which use Debian-based VMs and containerized applications.
+
+### The Implementation
+
+To implement this change, we leveraged a custom metadata script known as a startup-script. This script, written in a template file (tftpl), is designed to execute only if the Infoblox IP is present, as not all environments have Infoblox configured. The startup-script is configured to run when the VM starts for the first time.
+
+The script performs several key tasks:
+
+1. **Updating `/etc/dhcp/dhclient.conf`:**
+   - We added the line `supersede domain-name-servers 1.1.1.1;` to this file. This line ensures that the DNS servers provided by the DHCP server are overridden by the specified Infoblox DNS server. The `supersede` directive is used here to replace any DNS settings provided by the DHCP server with our preferred DNS server, Infoblox. This is crucial for ensuring that all DNS queries are routed through Infoblox, enhancing our control over DNS resolutions.
+
+Why Update /etc/dhcp/dhclient.conf?
+The DHCP client configuration file (/etc/dhcp/dhclient.conf) is updated to ensure that the DNS settings are persistent across reboots and network restarts. By using the supersede directive, we force the system to use our specified DNS servers instead of any provided by the DHCP server. This ensures consistent and reliable DNS resolution through Infoblox, regardless of network configuration changes or restarts.
+
+Restarting the Networking Service:
+
+After updating the DHCP client configuration, we restart the networking service to apply these changes. Restarting the networking service ensures that the new DNS settings are reflected in the /etc/resolv.conf file, which is used by the system for DNS queries. This step is critical because changes to the DHCP client configuration do not take effect until the network service is restarted.
+
+Why Restart the Networking Service?
+Restarting the networking service (systemctl restart networking) is necessary to reload the network configuration and apply the changes made to /etc/dhcp/dhclient.conf. This ensures that the /etc/resolv.conf file is updated with the new DNS settings, reflecting the Infoblox DNS servers. Without this step, the system would continue using the old DNS settings, and our changes would not take effect.
+2. **Updating `/etc/hosts` in the VM:**
+   - The script also adds necessary entries to the `/etc/hosts` file to ensure internal services like `metadata.google.internal` can be resolved correctly.
+
+3. **Updating `/etc/hosts` in the Jupyter Notebook Container:**
+   - For the containerized Jupyter Notebooks, we used the `--add-host` arguments with the Docker run command to ensure these containers also recognize the Infoblox DNS servers.
+
+#### Ensuring Idempotency
+
+To make sure these changes are only applied once, the startup-script includes a check to see if the necessary entries already exist in the respective files. This is done using `grep` commands. If the entries are present, the script skips the updates, ensuring that the changes are not redundantly applied on subsequent starts.
+
+Here is a simplified version of the script logic:
+
+```bash
+#!/bin/bash
+
+# Check if Infoblox IP is set
+if [[ -n "$INFOBLOX_IP" ]]; then
+  # Update dhclient.conf if not already updated
+  if ! grep -q "supersede domain-name-servers $INFOBLOX_IP;" /etc/dhcp/dhclient.conf; then
+    echo "supersede domain-name-servers $INFOBLOX_IP;" >> /etc/dhcp/dhclient.conf
+  fi
+
+  # Update /etc/hosts if not already updated
+  if ! grep -q "metadata.google.internal" /etc/hosts; then
+    echo "169.254.169.254 metadata.google.internal" >> /etc/hosts
+  fi
+
+  # Restart networking to apply changes
+  systemctl restart networking
+
+  # Update Docker run command to include --add-host for the container
+  docker run --add-host metadata.google.internal:169.254.169.254 --add-host media.google.internal:$INFOBLOX_IP ...
+fi
+```
+
+### Challenges and Complexities
+
+Despite these meticulous preparations, we encountered unexpected behavior. DNS queries, particularly for `metadata.google.internal`, failed even though the configurations appeared correct. 
+
+#### Investigative Journey
+
+To resolve this, we undertook a deep investigation. Logs were scrutinized, revealing conflicts and misconfigurations within the initialization scripts and the startup processes of the VMs and containers. The detailed review and refinement of these scripts were crucial. Ensuring the scripts executed in the correct sequence without conflicts was a key part of the solution.
+
+### Overcoming the Challenges
+
+1. **Script Analysis and Refinement:**
+   - We meticulously reviewed and refined the custom startup-scripts, ensuring they executed correctly and did not conflict with other processes.
+
+2. **Incremental Testing and Validation:**
+   - An incremental approach to applying and testing changes was adopted. By isolating and validating each step, we pinpointed and addressed the DNS resolution failure.
+
+3. **Collaboration and Knowledge Sharing:**
+   - Collaboration with network administrators and other engineers provided valuable insights. Documenting each step ensured transparency and reproducibility.
+
+4. **Fallback Mechanisms:**
+   - Fallback mechanisms were implemented to mitigate disruptions, ensuring that the system could revert to a stable state if DNS resolution failed.
+
+### The Resolution
+
+Through this rigorous process, we successfully aligned the DNS configuration with our strategic direction. The Vertex AI Workbench User Managed Jupyter Notebooks now reliably use Infoblox for all DNS resolutions, ensuring compliance and enhancing our network management capabilities.
+
+### Conclusion
+
+This project highlighted the importance of thorough testing, collaboration, and a deep understanding of our infrastructure and tools. The challenges we faced and overcame not only met the immediate requirement but also strengthened our ability to handle similar issues in the future. This journey has fostered a culture of resilience and continuous improvement within our team.
+
+Thank you for listening, and I'm happy to take any questions you may have.
+
+--
