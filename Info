@@ -1,32 +1,33 @@
-DNS Resolution with Infoblox
+The problem is that users need to access Cloud Workstations through a trusted, custom domain instead of the default `cloudworkstations.dev` domain. This requires setting up a private cluster with a Private Service Connect endpoint and configuring an Application Load Balancer with a custom SSL certificate, which adds complexity to the deployment and management of Cloud Workstations[1].
 
-#### The Requirement
-As a DevOps Engineer at the organization, a new strategic direction mandated that all DNS resolutions, whether for internal services like GitHub Enterprise or Nexus, be routed through the on-premises Infoblox system. This requirement applied to all infrastructure, including the Vertex AI Workbench User Managed Jupyter Notebook instances, which run on Debian-based VMs.
+The motivation for implementing custom domains for Cloud Workstations is to enhance security and maintain brand consistency. By using a trusted, organization-specific domain, companies can ensure that their development environments align with their security policies and present a professional, cohesive image to both internal users and external collaborators.
 
-#### The Challenge Unveiled
-The primary task seemed straightforward: reconfigure the DNS settings so that every query would go through Infoblox. However, the unique environment of the Vertex AI Workbench, with its mix of VM and containerized applications, introduced complexities that weren't immediately apparent.
 
-#### Initial Configuration Attempts
-To meet the requirement, the initial approach involved updating the DNS configurations at both the VM and container levels. Changes were made to the DHCP client configuration and the hosts file to ensure that the VMs would point to the Infoblox DNS servers. Containers running the Jupyter Notebook were also configured to recognize Infoblox for DNS resolution.
 
-Despite following these standard procedures, the system began to exhibit unexpected behavior. Specifically, DNS queries to critical internal services, like `metadata.google.internal`, failed, disrupting essential operations within the Jupyter Notebooks.
+## Option 1: Dedicated Load Balancer for Each Workstation Cluster
 
-#### Investigative Journey
-This led to a deeper investigation. Logs were scrutinized, revealing that while the DNS settings appeared correct, the metadata resolution was not functioning as intended. This was puzzling, given that the necessary entries were present in the hosts file.
+### Pros
+1. **Isolation and Fault Tolerance**: Each cluster has its own load balancer, reducing the risk of a single point of failure affecting both clusters.
+2. **Performance Optimization**: Load balancers can be fine-tuned for the specific needs of each cluster, potentially improving performance.
+3. **Simplified Troubleshooting**: Issues can be isolated to a specific cluster and its load balancer, making it easier to diagnose and fix problems.
 
-The breakthrough came through a systematic review of the initialization scripts and startup processes. The issue was traced to the interaction between the network configuration scripts and the custom start-scripts used for initializing the VM and containers.
+### Cons
+1. **Increased Cost**: Maintaining separate load balancers for each cluster will likely incur higher costs.
+2. **Management Overhead**: More complex to manage and maintain multiple load balancers.
+3. **Resource Utilization**: Potentially less efficient use of resources compared to a shared load balancer.
 
-#### Overcoming the Challenges
-To resolve the issue, a multi-faceted approach was taken:
-1. **Script Analysis and Refinement:** The custom start-scripts were meticulously analyzed and refined. It was crucial to ensure that these scripts executed in the correct sequence and that they applied the DNS settings without conflicting with other initialization processes.
+## Option 2: Shared Load Balancer for Both Clusters
 
-2. **Incremental Testing and Validation:** Instead of making all changes at once, an incremental approach was adopted. Each configuration change was applied and thoroughly tested, isolating the exact point where the DNS resolution failed. This step-by-step validation helped pinpoint the precise cause of the problem.
+### Pros
+1. **Cost Efficiency**: A single load balancer reduces infrastructure costs.
+2. **Simplified Management**: Easier to manage and maintain a single load balancer.
+3. **Resource Optimization**: More efficient use of resources, as the load balancer can dynamically allocate traffic between clusters.
 
-3. **Collaboration and Knowledge Sharing:** The challenge was a team effort. Collaboration with network administrators and other engineers provided valuable insights into the Infoblox setup and network architecture. Sharing findings and documenting each step ensured that the process was transparent and could be replicated or adjusted by other team members.
+### Cons
+1. **Single Point of Failure**: If the shared load balancer fails, both clusters will be affected.
+2. **Complexity in Configuration**: More complex to configure and ensure that traffic is evenly and appropriately distributed between clusters.
+3. **Potential Performance Bottlenecks**: A single load balancer might become a bottleneck if not properly scaled and managed.
 
-4. **Fallback Mechanisms:** To safeguard against disruptions, fallback mechanisms were implemented. These ensured that if a DNS resolution failed, the system could revert to a stable state, minimizing downtime and maintaining user productivity.
+## Recommendation
 
-#### The Resolution
-Through this rigorous process, the DNS configuration was successfully aligned with the organization's strategic direction. The Vertex AI Workbench User Managed Jupyter Notebooks now reliably use Infoblox for all DNS resolutions, ensuring compliance and enhancing network management capabilities.
-
-The journey underscored the importance of thorough testing, collaboration, and a deep understanding of both the infrastructure and the tools involved. The challenges faced and overcome during this process not only met the immediate requirement but also strengthened the team's ability to handle similar issues in the future, fostering a culture of resilience and continuous improvement.
+Given the scale of your deployment (4000 workstations), **Option 1: Dedicated Load Balancer for Each Workstation Cluster** is recommended. This approach provides better isolation and fault tolerance, which is crucial for maintaining high availability and performance in a large-scale environment. While it may incur higher costs and management overhead, the benefits of improved fault tolerance, performance optimization, and simplified troubleshooting outweigh these drawbacks. Ensuring that each cluster can operate independently will help mitigate risks and ensure a more resilient setup.
