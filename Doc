@@ -16,6 +16,50 @@ Thank you for your assistance.
 
 Best regards,
 
+Sure, here's the draft for your email:
+
+---
+
+Subject: Request for Change: Update on OAuth Login Flow for GCP Cloud Workstations
+
+Hi [Change Coordinator's Name],
+
+I hope this email finds you well.
+
+I am writing to inform you about an upcoming change regarding the OAuth Login flow used by GCP Cloud Workstations and to request its inclusion in the upcoming SOE.
+
+### Current Authentication Flow
+Currently, the authentication process for users accessing GCP Cloud Workstations is as follows:
+1. The user opens `80-{workstation-name}.cluster-{randomstring}.cloudworkstations.dev`.
+2. The user gets redirected to `https://ssh.cloud.google.com/devshell/oauth?authuser=0&state={state-value}`.
+3. If the user is authorized, they get redirected to `https://80-{workstation-name}.cluster-{randomstring}.cloudworkstations.dev/_workstation/login?redirect={state-value}&workstation_jwt={jwt-value}`.
+4. The workstation then sets the `workstation_jwt` parameter's value as a cookie, and the user is logged in.
+
+### Issue and Change
+Our proxy has been blocking calls to `ssh.cloud.google.com`. We raised a feature request with Google, and they recently rolled out an update to address this issue.
+
+### New Authentication Flow
+The updated feature removes the redirection to `ssh.cloud.google.com`, simplifying the authentication process. We have validated this change in lower environments, and it works as expected. 
+
+### Request
+We would like to validate this update in the connected environment. Therefore, we request that you include this change as part of the SOE. This will involve deploying the workstation and attempting to launch it to ensure the new flow works correctly.
+
+### Impact
+This change should resolve the proxy issue and improve the authentication process for users without causing any disruptions or requiring additional modifications.
+
+Please let me know if you need any further information or if there are any concerns regarding this request.
+
+Thank you for your assistance.
+
+Best regards,
+
+[Your Name]  
+[Your Position]  
+[Your Contact Information]
+
+---
+
+Feel free to adjust any details to better fit your needs.
 
 
 
