@@ -1,33 +1,143 @@
-The problem is that users need to access Cloud Workstations through a trusted, custom domain instead of the default `cloudworkstations.dev` domain. This requires setting up a private cluster with a Private Service Connect endpoint and configuring an Application Load Balancer with a custom SSL certificate, which adds complexity to the deployment and management of Cloud Workstations[1].
+### **Capacity Management Document for GCP Cloud Workstations with 4000 Workstations and ALB Setup**
 
-The motivation for implementing custom domains for Cloud Workstations is to enhance security and maintain brand consistency. By using a trusted, organization-specific domain, companies can ensure that their development environments align with their security policies and present a professional, cohesive image to both internal users and external collaborators.
+---
 
+#### **Introduction**
 
+This document outlines the capacity management requirements for deploying **4000 Google Cloud Workstations**. We are using a custom domain setup, which involves deploying an **Application Load Balancer (ALB)**. Due to this, a **proxy-only subnet** is required for the ALB. The focus is on ensuring that we have sufficient **IP address allocation**, **CPU quotas**, **disk quotas**, and other critical resource limits in place for successful operation, while accounting for **system limits per region per project**.
 
-## Option 1: Dedicated Load Balancer for Each Workstation Cluster
+---
 
-### Pros
-1. **Isolation and Fault Tolerance**: Each cluster has its own load balancer, reducing the risk of a single point of failure affecting both clusters.
-2. **Performance Optimization**: Load balancers can be fine-tuned for the specific needs of each cluster, potentially improving performance.
-3. **Simplified Troubleshooting**: Issues can be isolated to a specific cluster and its load balancer, making it easier to diagnose and fix problems.
+### **1. Quota Requirements for 4000 Workstations**
 
-### Cons
-1. **Increased Cost**: Maintaining separate load balancers for each cluster will likely incur higher costs.
-2. **Management Overhead**: More complex to manage and maintain multiple load balancers.
-3. **Resource Utilization**: Potentially less efficient use of resources compared to a shared load balancer.
+We need to ensure that the following resources are adequately allocated for 4000 workstations, considering both compute and networking resources. Additionally, we will factor in the **system limits per region per project**.
 
-## Option 2: Shared Load Balancer for Both Clusters
+#### **1.1 Compute Quotas**
 
-### Pros
-1. **Cost Efficiency**: A single load balancer reduces infrastructure costs.
-2. **Simplified Management**: Easier to manage and maintain a single load balancer.
-3. **Resource Optimization**: More efficient use of resources, as the load balancer can dynamically allocate traffic between clusters.
+The following quotas must be ensured for the VM instances that will host the workstations:
+- **CPU Quota**: Each VM will require CPU resources based on its configuration (e.g., 4 vCPUs per workstation). For 4000 workstations, this can vary:
+  - 4000 workstations × 4 vCPUs = **16,000 vCPUs**.
+  
+  **Note**: You must ensure that your regional CPU quota can accommodate these resources.
 
-### Cons
-1. **Single Point of Failure**: If the shared load balancer fails, both clusters will be affected.
-2. **Complexity in Configuration**: More complex to configure and ensure that traffic is evenly and appropriately distributed between clusters.
-3. **Potential Performance Bottlenecks**: A single load balancer might become a bottleneck if not properly scaled and managed.
+- **Persistent Disk Quota**: Allocate space for persistent disks based on VM configuration:
+  - If each workstation is allocated 100GB persistent disk space:
+    - 4000 workstations × 100 GB = **400 TB** of Persistent Disk quota.
 
-## Recommendation
+- **External IP Quota**: If workstations are assigned external IP addresses, ensure sufficient **external IP quota** (although in this case, using ALB and private IPs might make this unnecessary).
 
-Given the scale of your deployment (4000 workstations), **Option 1: Dedicated Load Balancer for Each Workstation Cluster** is recommended. This approach provides better isolation and fault tolerance, which is crucial for maintaining high availability and performance in a large-scale environment. While it may incur higher costs and management overhead, the benefits of improved fault tolerance, performance optimization, and simplified troubleshooting outweigh these drawbacks. Ensuring that each cluster can operate independently will help mitigate risks and ensure a more resilient setup.
+---
+
+#### **1.2 Regional System Limits for Cloud Workstations**
+
+In addition to quotas, GCP Cloud Workstations impose certain **system limits per region per project** that need to be considered when deploying 4000 workstations:
+
+| **Resource**                           | **Limit**                        |
+|----------------------------------------|-----------------------------------|
+| **Maximum Workstation Clusters**       | 5 clusters per region per project |
+| **Maximum Workstation Configurations** | 200 configurations per project    |
+| **Maximum Concurrent Workstations**    | 1000 workstations per project     |
+
+---
+
+**Consideration for 4000 Workstations:**
+- **Workstation Clusters**: You will need to deploy multiple clusters since the limit is **5 clusters per region per project**. If you have 4000 workstations, each cluster should be able to handle 800 workstations (assuming even distribution).
+  - **Required Clusters**: 4000 workstations ÷ 800 per cluster = **5 clusters**.
+  
+- **Workstation Configurations**: If each cluster has different configurations (up to **200 per project**), ensure that you manage this limit effectively based on the needs of your development environment.
+
+- **Concurrent Workstations**: The system limit of **1000 concurrent workstations per project** means that you might need to plan across multiple regions if more than 1000 workstations need to run simultaneously.
+
+---
+
+#### **1.3 Network IP Address Quota**
+
+Key networking considerations include IP address management within the **VPC** and the **proxy-only subnet** for the ALB. We need to ensure sufficient IP addresses are available to avoid subnet exhaustion.
+
+#### **IP Addresses for Workstations**
+- **4000 Workstations** = 4000 internal IP addresses.
+- **Quick Start Pool** (optional): Add `n` IP addresses for pre-provisioned workstations. For example, if the pool size is set to 100, you need 100 additional IP addresses.
+- **Cloud Workstation Controller**: Each configuration requires 1 IP address to establish the connection between the Cloud Workstations controller and the VPC.
+- **Application Load Balancer (ALB)**: Requires IP addresses in the **proxy-only subnet**.
+
+---
+
+### **2. IP Address Allocation Planning**
+
+For 4000 workstations, IP address allocation needs careful planning. We will calculate IP address needs based on **workstation IP requirements**, **Quick Start Pool**, **Cloud Workstation Controller**, and **ALB**.
+
+---
+
+### **3. Subnet Sizing and VPC Considerations**
+
+#### **3.1 Subnet Sizing for Workstations**
+
+We need to allocate a subnet large enough to accommodate all 4000 workstations, the quick start pool (if used), and other internal components like the Cloud Workstation controller.
+
+Using CIDR subnetting, we can calculate the required subnet size:
+- **IP addresses for 4000 workstations + 100 quick start pool + 1 controller IP**:
+  - Total: **4101 IP addresses** required.
+  
+A **/19 subnet** will provide **8192 IP addresses**, which is sufficient for this setup.
+
+#### **3.2 Subnet Sizing for ALB (Proxy-Only Subnet)**
+
+For the **Application Load Balancer (ALB)**, a **proxy-only subnet** is required. The size of the subnet must account for the ALB’s load balancer components:
+- ALB components typically use around **4-6 IP addresses** (depending on the setup).
+  
+A **/28 subnet** will provide **16 IP addresses**, sufficient for the ALB components.
+
+---
+
+### **4. Resource Quota Requirements for GCP**
+
+To ensure smooth operation of 4000 Cloud Workstations, the following GCP quotas need to be requested and validated:
+
+| **Resource**              | **Quota Required**             |
+|---------------------------|--------------------------------|
+| **vCPUs**                 | 16,000                         |
+| **Persistent Disk (SSD)**  | 400 TB                         |
+| **Internal IP Addresses**  | 4101 (for /19 subnet)          |
+| **External IP Addresses**  | Optional, depending on setup   |
+| **ALB IP Addresses**       | 16 IPs for proxy-only subnet   |
+
+---
+
+### **5. Subnet Configuration Summary**
+
+- **Workstation Subnet**: Configure a **/19 subnet** within your VPC to provide 8192 IP addresses.
+  - Total IPs: 8192
+  - 4000 for workstations.
+  - 100 for Quick Start Pool (optional).
+  - 1 for Workstation controller.
+  - Remaining IPs for future expansion or other resources.
+
+- **ALB Proxy-Only Subnet**: Configure a **/28 subnet** for the ALB with 16 IP addresses.
+  - Total IPs: 16
+  - 4-6 IP addresses for ALB components.
+
+---
+
+### **6. Quota Request**
+
+Ensure that the following quotas are requested and approved in your GCP project:
+
+| **Resource**              | **Quota Required**             |
+|---------------------------|--------------------------------|
+| **vCPUs**                 | 16,000                         |
+| **Persistent Disk (SSD)**  | 400 TB                         |
+| **Internal IP Addresses**  | 4101 (for /19 subnet)          |
+| **External IP Addresses**  | Optional, depending on setup   |
+| **ALB IP Addresses**       | 16 IPs for proxy-only subnet   |
+
+---
+
+### **7. Summary and Conclusion**
+
+- A **/19 subnet** for Cloud Workstations is sufficient to accommodate 4000 workstations, a Quick Start Pool, and the Workstation controller.
+- A **/28 proxy-only subnet** is required for the Application Load Balancer (ALB) components.
+- Ensure sufficient **CPU and Persistent Disk quotas** for the workstation fleet.
+- Request the appropriate **internal IP address quota** in your GCP project.
+- Consider the **system limits per region per project** when planning for workstation clusters, configurations, and concurrent workstations. If you need to run more than 1000 workstations concurrently, plan across multiple regions.
+
+By following these guidelines, your team will have enough capacity to run 4000 workstations efficiently while ensuring proper resource management for ALB, network configurations, and quota allocations across regions.
